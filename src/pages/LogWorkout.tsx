@@ -3,9 +3,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { useStorage } from '../hooks/useStorage';
 import { DEFAULT_EXERCISES } from '../data/exercises';
 import { ROUTINES } from '../data/routine';
-import type { Routine, RoutineDay } from '../data/routine';
+import type { RoutineDay } from '../data/routine';
 import type { SetEntry, WorkoutExercise, WorkoutLog } from '../types';
 import './LogWorkout.css';
+
+const ROUTINE = ROUTINES[0];
 
 function parseRepRange(repRange: string): { min: number; max: number } | null {
   const match = repRange.match(/(\d+)\s*[–\-]\s*(\d+)/);
@@ -27,7 +29,6 @@ export default function LogWorkout() {
 
   const today = new Date().toISOString().slice(0, 10);
   const [date, setDate] = useState(today);
-  const [selectedRoutine, setSelectedRoutine] = useState<Routine | null>(null);
   const [selectedDay, setSelectedDay] = useState<RoutineDay | null>(null);
   const [workoutExercises, setWorkoutExercises] = useState<WorkoutExercise[]>([]);
   const [weightIncreased, setWeightIncreased] = useState<Record<string, boolean>>({});
@@ -36,15 +37,6 @@ export default function LogWorkout() {
   const [saved, setSaved] = useState(false);
 
   const exerciseMap = Object.fromEntries(DEFAULT_EXERCISES.map(e => [e.id, e]));
-
-  function selectRoutine(routine: Routine) {
-    setSelectedRoutine(routine);
-    setSelectedDay(null);
-    setWorkoutExercises([]);
-    setWeightIncreased({});
-    setPreviousSession(null);
-    setSaved(false);
-  }
 
   function selectDay(day: RoutineDay) {
     const prev = findPreviousSession(logs, day);
@@ -172,43 +164,22 @@ export default function LogWorkout() {
       </div>
 
       <div className="selection-section">
-        <p className="selection-label">Routine</p>
+        <p className="selection-label">Day</p>
         <div className="btn-group">
-          {ROUTINES.map(routine => (
+          {ROUTINE.days.map(day => (
             <button
-              key={routine.id}
-              className={`btn-select${selectedRoutine?.id === routine.id ? ' active' : ''}`}
-              onClick={() => selectRoutine(routine)}
+              key={day.name}
+              className={`btn-select${selectedDay?.name === day.name ? ' active' : ''}`}
+              onClick={() => selectDay(day)}
             >
-              {routine.name}
+              {day.name}
             </button>
           ))}
         </div>
       </div>
 
-      {selectedRoutine && (
-        <div className="selection-section">
-          <p className="selection-label">Day</p>
-          <div className="btn-group">
-            {selectedRoutine.days.map(day => (
-              <button
-                key={day.name}
-                className={`btn-select${selectedDay?.name === day.name ? ' active' : ''}`}
-                onClick={() => selectDay(day)}
-              >
-                {day.name}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {!selectedRoutine && (
-        <p className="empty-hint">Select a routine above to get started.</p>
-      )}
-
-      {selectedRoutine && !selectedDay && (
-        <p className="empty-hint">Now select a day.</p>
+      {!selectedDay && (
+        <p className="empty-hint">Select a day above to get started.</p>
       )}
 
       {workoutExercises.map(we => {
