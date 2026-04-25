@@ -1,0 +1,76 @@
+.dashboard h1 {
+  margin-bottom: 1.5rem;
+}
+
+.empty-state {
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.section {
+  margin-bottom: 2.5rem;
+}
+
+.section h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ccc;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pr-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.pr-table th {
+  text-align: left;
+  color: #666;
+  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #222;
+}
+
+.pr-table td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid #1e1e1e;
+}
+
+.pr-table tbody tr {
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.pr-table tbody tr:hover {
+  background: #1a1a1a;
+}
+
+.pr-table tbody tr.selected {
+  background: #1e1010;
+  outline: 1px solid #e84040;
+}
+
+.pr-table tbody tr.selected td:first-child {
+  color: #e84040;
+  font-weight: 600;
+}
+
+.hint {
+  font-size: 0.8rem;
+  color: #555;
+  margin-top: 0.5rem;
+}
+
+.chart-block {
+  margin-bottom: 2rem;
+}
+
+.chart-block h3 {
+  font-size: 0.85rem;
+  color: #888;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+}

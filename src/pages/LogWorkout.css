@@ -1,0 +1,293 @@
+.log-page h1 {
+  margin-bottom: 1.5rem;
+}
+
+.log-date {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.log-date label {
+  font-weight: 600;
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.log-date input[type='date'] {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.selection-section {
+  margin-bottom: 1.25rem;
+}
+
+.selection-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.btn-select {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #aaa;
+  padding: 0.55rem 1.1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.btn-select:hover {
+  border-color: #666;
+  color: #fff;
+}
+
+.btn-select.active {
+  border-color: #e84040;
+  color: #fff;
+  background: #1f1010;
+}
+
+.exercise-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.rep-range {
+  font-size: 0.8rem;
+  color: #666;
+  font-weight: 400;
+}
+
+.weight-increased {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #4caf50;
+  background: #0d2010;
+  border: 1px solid #1e4a25;
+  border-radius: 5px;
+  padding: 0.2rem 0.55rem;
+  white-space: nowrap;
+}
+
+.apply-weight-prompt {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #ccc;
+}
+
+.apply-weight-prompt span {
+  flex: 1;
+}
+
+.prev-session {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #2a2a2a;
+}
+
+.prev-session-label {
+  font-size: 0.72rem;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.prev-session-sets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.prev-set-chip {
+  font-size: 0.78rem;
+  color: #888;
+  background: #111;
+  border: 1px solid #2a2a2a;
+  border-radius: 4px;
+  padding: 0.15rem 0.5rem;
+}
+
+.empty-hint {
+  color: #555;
+  font-style: italic;
+  margin-top: 1rem;
+}
+
+.exercise-card {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.exercise-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.exercise-name {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.sets-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.sets-table th {
+  text-align: left;
+  color: #666;
+  font-weight: 500;
+  padding: 0.3rem 0.5rem;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.sets-table td {
+  padding: 0.4rem 0.5rem;
+}
+
+.sets-table input[type='number'] {
+  width: 80px;
+  background: #111;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 0.35rem 0.5rem;
+  border-radius: 5px;
+  font-size: 0.9rem;
+}
+
+.sets-table input[type='number']:focus {
+  outline: none;
+  border-color: #e84040;
+}
+
+.save-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.saved-msg {
+  color: #4caf50;
+  font-size: 0.9rem;
+}
+
+.btn-primary {
+  background: #e84040;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.4rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-primary:hover {
+  background: #c93030;
+}
+
+.btn-primary:disabled {
+  background: #444;
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  background: none;
+  border: 1px solid #333;
+  color: #aaa;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.btn-ghost:hover {
+  border-color: #666;
+  color: #fff;
+}
+
+.btn-ghost.small {
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.recent-logs {
+  margin-top: 2.5rem;
+}
+
+.recent-logs h2 {
+  font-size: 1rem;
+  color: #aaa;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.log-summary {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #222;
+  font-size: 0.875rem;
+}
+
+.btn-delete-log {
+  margin-left: auto;
+  flex-shrink: 0;
+  color: #c93030;
+  border-color: #3a1a1a;
+}
+
+.btn-delete-log:hover {
+  border-color: #c93030;
+  color: #e84040;
+}
+
+.log-date-label {
+  color: #888;
+  min-width: 100px;
+}
+
+.log-exercises {
+  color: #ccc;
+}
