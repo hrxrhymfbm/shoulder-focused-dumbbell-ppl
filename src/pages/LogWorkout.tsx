@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useStorage } from '../hooks/useStorage';
 import { DEFAULT_EXERCISES } from '../data/exercises';
 import { ROUTINES } from '../data/routine';
+import { SEED_LOGS } from '../data/seedLogs';
 import type { RoutineDay } from '../data/routine';
 import type { SetEntry, WorkoutExercise, WorkoutLog } from '../types';
 import './LogWorkout.css';
@@ -25,7 +26,7 @@ function findPreviousSession(logs: WorkoutLog[], day: RoutineDay): WorkoutLog | 
 }
 
 export default function LogWorkout() {
-  const [logs, setLogs] = useStorage<WorkoutLog[]>('logs', []);
+  const [logs, setLogs] = useStorage<WorkoutLog[]>('logs', SEED_LOGS);
 
   const today = new Date().toISOString().slice(0, 10);
   const [date, setDate] = useState(today);

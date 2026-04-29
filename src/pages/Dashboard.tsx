@@ -4,8 +4,12 @@ import {
 } from 'recharts';
 import { useStorage } from '../hooks/useStorage';
 import { DEFAULT_EXERCISES } from '../data/exercises';
+import { ROUTINES } from '../data/routine';
+import { SEED_LOGS } from '../data/seedLogs';
 import type { WorkoutLog } from '../types';
 import './Dashboard.css';
+
+const ROUTINE = ROUTINES[0];
 
 function epley1RM(weight: number, reps: number): number {
   if (reps === 1) return weight;
@@ -20,32 +24,26 @@ function getBestSet(sets: { weight: number; reps: number }[]) {
 }
 
 export default function Dashboard() {
-  const [logs] = useStorage<WorkoutLog[]>('logs', []);
+  const [logs] = useStorage<WorkoutLog[]>('logs', SEED_LOGS);
   const [selectedExerciseId, setSelectedExerciseId] = useState('');
+  const [activeDay, setActiveDay] = useState(ROUTINE.days[0].name);
 
   const exerciseMap = Object.fromEntries(DEFAULT_EXERCISES.map(e => [e.id, e]));
 
-  // Collect all exercise IDs that have been logged
-  const loggedExerciseIds = Array.from(
-    new Set(logs.flatMap(l => l.exercises.map(e => e.exerciseId)))
-  );
-
-  // Build PR table
-  const prs = loggedExerciseIds.map(exId => {
+  // Build PR map keyed by exerciseId
+  const prMap = new Map<string, { weight: number; reps: number; estimated1RM: number }>();
+  const loggedIds = new Set(logs.flatMap(l => l.exercises.map(e => e.exerciseId)));
+  for (const exId of loggedIds) {
     const allSets = logs.flatMap(l =>
       l.exercises.filter(e => e.exerciseId === exId).flatMap(e => e.sets)
     ).filter(s => s.reps > 0 && s.weight > 0);
-
-    if (!allSets.length) return null;
+    if (!allSets.length) continue;
     const best = getBestSet(allSets);
-    return {
-      exerciseId: exId,
-      name: exerciseMap[exId]?.name ?? exId,
-      weight: best.weight,
-      reps: best.reps,
-      estimated1RM: epley1RM(best.weight, best.reps),
-    };
-  }).filter(Boolean) as { exerciseId: string; name: string; weight: number; reps: number; estimated1RM: number }[];
+    prMap.set(exId, { weight: best.weight, reps: best.reps, estimated1RM: epley1RM(best.weight, best.reps) });
+  }
+
+  // Exercises for the active day tab
+  const activeDayExercises = ROUTINE.days.find(d => d.name === activeDay)?.exercises ?? [];
 
   // Build chart data for selected exercise
   const chartData = selectedExerciseId
@@ -77,9 +75,25 @@ export default function Dashboard() {
         <p className="empty-state">No workouts logged yet. Head to <strong>Log Workout</strong> to get started.</p>
       )}
 
-      {prs.length > 0 && (
+      {prMap.size > 0 && (
         <section className="section">
           <h2>Personal Records</h2>
+
+          <div className="day-tabs">
+            {ROUTINE.days.map(day => (
+              <button
+                key={day.name}
+                className={`day-tab${activeDay === day.name ? ' active' : ''}`}
+                onClick={() => {
+                  setActiveDay(day.name);
+                  setSelectedExerciseId('');
+                }}
+              >
+                {day.name}
+              </button>
+            ))}
+          </div>
+
           <table className="pr-table">
             <thead>
               <tr>
@@ -89,19 +103,23 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              {prs.map(pr => (
-                <tr
-                  key={pr.exerciseId}
-                  className={selectedExerciseId === pr.exerciseId ? 'selected' : ''}
-                  onClick={() => setSelectedExerciseId(
-                    selectedExerciseId === pr.exerciseId ? '' : pr.exerciseId
-                  )}
-                >
-                  <td>{pr.name}</td>
-                  <td>{pr.weight} lbs × {pr.reps}</td>
-                  <td>{pr.estimated1RM} lbs</td>
-                </tr>
-              ))}
+              {activeDayExercises.map(re => {
+                const pr = prMap.get(re.exerciseId);
+                const name = exerciseMap[re.exerciseId]?.name ?? re.exerciseId;
+                return (
+                  <tr
+                    key={re.exerciseId}
+                    className={selectedExerciseId === re.exerciseId ? 'selected' : pr ? '' : 'no-data'}
+                    onClick={() => pr && setSelectedExerciseId(
+                      selectedExerciseId === re.exerciseId ? '' : re.exerciseId
+                    )}
+                  >
+                    <td>{name}</td>
+                    <td>{pr ? `${pr.weight} lbs × ${pr.reps}` : '—'}</td>
+                    <td>{pr ? `${pr.estimated1RM} lbs` : '—'}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
           <p className="hint">Click a row to view progress charts.</p>

@@ -20,6 +20,40 @@
   letter-spacing: 0.05em;
 }
 
+.day-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.day-tab {
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #333;
+  background: transparent;
+  color: #888;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.day-tab:hover {
+  background: #1a1a1a;
+  color: #ccc;
+}
+
+.day-tab.active {
+  background: #1e1010;
+  border-color: #e84040;
+  color: #e84040;
+}
+
+.pr-table tbody tr.no-data {
+  opacity: 0.4;
+  cursor: default;
+}
+
 .pr-table {
   width: 100%;
   border-collapse: collapse;
@@ -73,4 +107,27 @@
   color: #888;
   font-weight: 500;
   margin-bottom: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .day-tabs {
+    gap: 0.4rem;
+  }
+
+  .day-tab {
+    flex: 1;
+    text-align: center;
+    padding: 0.6rem 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .pr-table th {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.78rem;
+  }
+
+  .pr-table td {
+    padding: 0.55rem 0.5rem;
+    font-size: 0.85rem;
+  }
 }

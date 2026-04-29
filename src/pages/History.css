@@ -125,3 +125,22 @@
   border-color: #c93030;
   color: #e84040;
 }
+
+@media (max-width: 640px) {
+  .session-header {
+    padding: 0.875rem 1rem;
+  }
+
+  .session-preview {
+    max-width: none;
+  }
+
+  .session-body {
+    padding: 0 1rem 1rem;
+  }
+
+  .btn-delete-session {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.82rem;
+  }
+}

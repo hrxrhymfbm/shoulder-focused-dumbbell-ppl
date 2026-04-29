@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useStorage } from '../hooks/useStorage';
 import { DEFAULT_EXERCISES } from '../data/exercises';
+import { SEED_LOGS } from '../data/seedLogs';
 import type { WorkoutLog } from '../types';
 import './History.css';
 
 export default function History() {
-  const [logs, setLogs] = useStorage<WorkoutLog[]>('logs', []);
+  const [logs, setLogs] = useStorage<WorkoutLog[]>('logs', SEED_LOGS);
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const exerciseMap = Object.fromEntries(DEFAULT_EXERCISES.map(e => [e.id, e]));

@@ -24,6 +24,12 @@ export default function Layout() {
       <main className="main">
         <Outlet />
       </main>
+      <nav className="bottom-nav" aria-label="Mobile navigation">
+        <NavLink to="/" end className={({ isActive }) => isActive ? 'active' : ''}>Home</NavLink>
+        <NavLink to="/log" className={({ isActive }) => isActive ? 'active' : ''}>Log</NavLink>
+        <NavLink to="/exercises" className={({ isActive }) => isActive ? 'active' : ''}>Exercises</NavLink>
+        <NavLink to="/history" className={({ isActive }) => isActive ? 'active' : ''}>History</NavLink>
+      </nav>
     </div>
   );
 }

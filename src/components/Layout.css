@@ -56,3 +56,64 @@
   width: 100%;
   box-sizing: border-box;
 }
+
+/* Bottom nav — hidden on desktop, shown on mobile */
+.bottom-nav {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .nav {
+    padding: 0 1rem;
+  }
+
+  .nav-logo {
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .main {
+    padding: 1.25rem 1rem 1.5rem;
+    padding-bottom: calc(60px + 1.25rem);
+  }
+
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: #111;
+    border-top: 1px solid #222;
+    z-index: 10;
+    /* safe area for notched phones */
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .bottom-nav a {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+    text-decoration: none;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    transition: color 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .bottom-nav a.active {
+    color: #e84040;
+  }
+}
