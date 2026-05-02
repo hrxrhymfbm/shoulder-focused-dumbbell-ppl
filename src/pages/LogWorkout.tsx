@@ -64,15 +64,18 @@ export default function LogWorkout() {
         // All sets hit max reps — bump weight by 5 lbs, reset to bottom of rep range
         sets = prevEx.sets.map(s => ({ weight: s.weight + 5, reps: range.min }));
       } else {
-        // Increment the first set that's below max reps by 1
-        let incremented = false;
-        sets = prevEx.sets.map(s => {
-          if (!incremented && s.reps < range.max) {
-            incremented = true;
-            return { weight: s.weight, reps: s.reps + 1 };
+        // Increment the set with the lowest reps (improve weakest set first)
+        let minReps = Infinity;
+        let minIdx = -1;
+        prevEx.sets.forEach((s, i) => {
+          if (s.reps < range.max && s.reps < minReps) {
+            minReps = s.reps;
+            minIdx = i;
           }
-          return { weight: s.weight, reps: s.reps };
         });
+        sets = prevEx.sets.map((s, i) =>
+          i === minIdx ? { weight: s.weight, reps: s.reps + 1 } : { weight: s.weight, reps: s.reps }
+        );
       }
 
       // Match target set count from routine
