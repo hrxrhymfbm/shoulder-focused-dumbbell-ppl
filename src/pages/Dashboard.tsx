@@ -5,7 +5,6 @@ import {
 import { useStorage } from '../hooks/useStorage';
 import { DEFAULT_EXERCISES } from '../data/exercises';
 import { ROUTINES } from '../data/routine';
-import { SEED_LOGS } from '../data/seedLogs';
 import type { WorkoutLog } from '../types';
 import './Dashboard.css';
 
@@ -24,7 +23,7 @@ function getBestSet(sets: { weight: number; reps: number }[]) {
 }
 
 export default function Dashboard() {
-  const [logs] = useStorage<WorkoutLog[]>('logs', SEED_LOGS);
+  const [logs] = useStorage<WorkoutLog[]>('logs', []);
   const [selectedExerciseId, setSelectedExerciseId] = useState('');
   const [activeDay, setActiveDay] = useState(ROUTINE.days[0].name);
 
