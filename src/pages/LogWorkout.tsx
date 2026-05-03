@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useStorage } from '../hooks/useStorage';
 import { DEFAULT_EXERCISES } from '../data/exercises';
@@ -36,6 +36,17 @@ export default function LogWorkout() {
   const [previousSession, setPreviousSession] = useState<WorkoutLog | null>(null);
   const [pendingWeightApply, setPendingWeightApply] = useState<{ exerciseId: string; weight: number } | null>(null);
   const [saved, setSaved] = useState(false);
+  const [restSecondsLeft, setRestSecondsLeft] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (restSecondsLeft === null || restSecondsLeft <= 0) return;
+    const id = setTimeout(() => setRestSecondsLeft(s => (s !== null ? s - 1 : null)), 1000);
+    return () => clearTimeout(id);
+  }, [restSecondsLeft]);
+
+  useEffect(() => {
+    if (restSecondsLeft === 0 && navigator.vibrate) navigator.vibrate([200, 100, 200]);
+  }, [restSecondsLeft]);
 
   const exerciseMap = Object.fromEntries(DEFAULT_EXERCISES.map(e => [e.id, e]));
 
@@ -158,8 +169,27 @@ export default function LogWorkout() {
     ? Object.fromEntries(selectedDay.exercises.map(re => [re.exerciseId, re.repRange]))
     : {};
 
+  const restMins = restSecondsLeft !== null ? Math.floor(restSecondsLeft / 60) : 0;
+  const restSecs = restSecondsLeft !== null ? String(restSecondsLeft % 60).padStart(2, '0') : '00';
+
   return (
-    <div className="log-page">
+    <div className={`log-page${restSecondsLeft !== null ? ' has-rest-timer' : ''}`}>
+      {restSecondsLeft !== null && (
+        <div className={`rest-timer${restSecondsLeft === 0 ? ' rest-done' : ''}`}>
+          {restSecondsLeft > 0 ? (
+            <>
+              <span className="rest-timer-label">Rest</span>
+              <span className="rest-timer-count">{restMins}:{restSecs}</span>
+              <button className="btn-ghost small" onClick={() => setRestSecondsLeft(null)}>Skip</button>
+            </>
+          ) : (
+            <>
+              <span className="rest-timer-go">Next set!</span>
+              <button className="btn-ghost small" onClick={() => setRestSecondsLeft(null)}>Dismiss</button>
+            </>
+          )}
+        </div>
+      )}
       <h1>Log Workout</h1>
 
       <div className="log-date">
@@ -255,7 +285,10 @@ export default function LogWorkout() {
               </tbody>
             </table>
 
-            <button className="btn-ghost" onClick={() => addSet(we.exerciseId)}>+ Add Set</button>
+            <div className="exercise-card-actions">
+              <button className="btn-ghost" onClick={() => addSet(we.exerciseId)}>+ Add Set</button>
+              <button className="btn-ghost rest-btn" onClick={() => setRestSecondsLeft(90)}>Rest 90s</button>
+            </div>
 
             {prevEx && prevEx.sets.length > 0 && (
               <div className="prev-session">

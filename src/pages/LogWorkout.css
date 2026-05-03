@@ -1,3 +1,66 @@
+.rest-timer {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.6rem 1.5rem;
+  background: #1a1a1a;
+  border-bottom: 1px solid #333;
+}
+
+.rest-timer.rest-done {
+  background: #0d2010;
+  border-bottom-color: #1e4a25;
+}
+
+.rest-timer-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #666;
+}
+
+.rest-timer-count {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #e84040;
+  font-variant-numeric: tabular-nums;
+  min-width: 3.5rem;
+  text-align: center;
+}
+
+.rest-timer-go {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #4caf50;
+}
+
+.exercise-card-actions {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.rest-btn {
+  color: #e84040;
+  border-color: #3a1a1a;
+}
+
+.rest-btn:hover {
+  border-color: #e84040;
+  color: #ff6060;
+}
+
+.log-page.has-rest-timer {
+  padding-top: 3rem;
+}
+
 .log-page h1 {
   margin-bottom: 1.5rem;
 }
