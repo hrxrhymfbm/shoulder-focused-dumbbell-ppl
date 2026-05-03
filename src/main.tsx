@@ -4,9 +4,9 @@ import './index.css'
 import App from './App.tsx'
 import { SEED_LOGS } from './data/seedLogs'
 
-// Seed historical data on first load (or if logs are empty)
+// Seed historical data on first load only (never overwrite user data)
 const stored = localStorage.getItem('logs');
-if (!stored || stored === '[]') {
+if (!stored) {
   localStorage.setItem('logs', JSON.stringify(SEED_LOGS));
 }
 
