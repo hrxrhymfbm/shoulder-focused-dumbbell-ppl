@@ -177,21 +177,10 @@
   white-space: nowrap;
 }
 
-.apply-weight-prompt {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin-bottom: 0.75rem;
-  padding: 0.5rem 0.75rem;
-  background: #111;
-  border: 1px solid #333;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  color: #ccc;
-}
-
-.apply-weight-prompt span {
-  flex: 1;
+.apply-all-hint {
+  font-size: 0.72rem;
+  color: #444;
+  margin: 0 0 0.6rem;
 }
 
 .prev-session {
@@ -438,11 +427,6 @@
     padding: 0.9rem 1.4rem;
     font-size: 1rem;
     text-align: center;
-  }
-
-  .apply-weight-prompt {
-    flex-wrap: wrap;
-    gap: 0.5rem;
   }
 
   .log-summary {

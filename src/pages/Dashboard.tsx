@@ -25,7 +25,6 @@ function getBestSet(sets: { weight: number; reps: number }[]) {
 export default function Dashboard() {
   const [logs] = useStorage<WorkoutLog[]>('logs', []);
   const [selectedExerciseId, setSelectedExerciseId] = useState('');
-  const [activeDay, setActiveDay] = useState(ROUTINE.days[0].name);
 
   const exerciseMap = Object.fromEntries(DEFAULT_EXERCISES.map(e => [e.id, e]));
 
@@ -41,8 +40,7 @@ export default function Dashboard() {
     prMap.set(exId, { weight: best.weight, reps: best.reps, estimated1RM: epley1RM(best.weight, best.reps) });
   }
 
-  // Exercises for the active day tab
-  const activeDayExercises = ROUTINE.days.find(d => d.name === activeDay)?.exercises ?? [];
+  const pr = selectedExerciseId ? prMap.get(selectedExerciseId) : null;
 
   // Build chart data for selected exercise
   const chartData = selectedExerciseId
@@ -78,50 +76,38 @@ export default function Dashboard() {
         <section className="section">
           <h2>Personal Records</h2>
 
-          <div className="day-tabs">
-            {ROUTINE.days.map(day => (
-              <button
-                key={day.name}
-                className={`day-tab${activeDay === day.name ? ' active' : ''}`}
-                onClick={() => {
-                  setActiveDay(day.name);
-                  setSelectedExerciseId('');
-                }}
-              >
-                {day.name}
-              </button>
-            ))}
+          <div className="pr-select-row">
+            <select
+              className="exercise-select"
+              value={selectedExerciseId}
+              onChange={e => setSelectedExerciseId(e.target.value)}
+            >
+              <option value="">Select an exercise…</option>
+              {ROUTINE.days.map(day => (
+                <optgroup key={day.name} label={day.name}>
+                  {day.exercises.map(re => {
+                    const name = exerciseMap[re.exerciseId]?.name ?? re.exerciseId;
+                    return (
+                      <option key={re.exerciseId} value={re.exerciseId}>{name}</option>
+                    );
+                  })}
+                </optgroup>
+              ))}
+            </select>
           </div>
 
-          <table className="pr-table">
-            <thead>
-              <tr>
-                <th>Exercise</th>
-                <th>Best Set</th>
-                <th>Est. 1RM</th>
-              </tr>
-            </thead>
-            <tbody>
-              {activeDayExercises.map(re => {
-                const pr = prMap.get(re.exerciseId);
-                const name = exerciseMap[re.exerciseId]?.name ?? re.exerciseId;
-                return (
-                  <tr
-                    key={re.exerciseId}
-                    className={selectedExerciseId === re.exerciseId ? 'selected' : pr ? '' : 'no-data'}
-                    onClick={() => pr && setSelectedExerciseId(
-                      selectedExerciseId === re.exerciseId ? '' : re.exerciseId
-                    )}
-                  >
-                    <td>{name}</td>
-                    <td>{pr ? `${pr.weight} lbs × ${pr.reps}` : '—'}</td>
-                    <td>{pr ? `${pr.estimated1RM} lbs` : '—'}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-          <p className="hint">Click a row to view progress charts.</p>
+          {selectedExerciseId && (
+            <div className="pr-stat-row">
+              <div className="pr-stat">
+                <span className="pr-stat-label">Best Set</span>
+                <span className="pr-stat-value">{pr ? `${pr.weight} lbs × ${pr.reps}` : '—'}</span>
+              </div>
+              <div className="pr-stat">
+                <span className="pr-stat-label">Est. 1RM</span>
+                <span className="pr-stat-value">{pr ? `${pr.estimated1RM} lbs` : '—'}</span>
+              </div>
+            </div>
+          )}
         </section>
       )}
 

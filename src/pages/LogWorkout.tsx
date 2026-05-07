@@ -34,7 +34,6 @@ export default function LogWorkout() {
   const [workoutExercises, setWorkoutExercises] = useState<WorkoutExercise[]>([]);
   const [weightIncreased, setWeightIncreased] = useState<Record<string, boolean>>({});
   const [previousSession, setPreviousSession] = useState<WorkoutLog | null>(null);
-  const [pendingWeightApply, setPendingWeightApply] = useState<{ exerciseId: string; weight: number } | null>(null);
   const [saved, setSaved] = useState(false);
   const [restSecondsLeft, setRestSecondsLeft] = useState<number | null>(null);
   const [completedSets, setCompletedSets] = useState<Record<string, boolean[]>>({});
@@ -168,20 +167,16 @@ export default function LogWorkout() {
           : e
       )
     );
-    if (field === 'weight' && setIndex === 0) {
-      setPendingWeightApply({ exerciseId, weight: value });
-    }
   }
 
-  function applyWeightToAll(exerciseId: string, weight: number) {
+  function applyFieldToAll(exerciseId: string, field: keyof SetEntry, value: number) {
     setWorkoutExercises(prev =>
       prev.map(e =>
         e.exerciseId === exerciseId
-          ? { ...e, sets: e.sets.map(s => ({ ...s, weight })) }
+          ? { ...e, sets: e.sets.map(s => ({ ...s, [field]: value })) }
           : e
       )
     );
-    setPendingWeightApply(null);
   }
 
   function saveWorkout() {
@@ -275,14 +270,6 @@ export default function LogWorkout() {
               </div>
             </div>
 
-            {pendingWeightApply?.exerciseId === we.exerciseId && we.sets.length > 1 && (
-              <div className="apply-weight-prompt">
-                <span>Apply {pendingWeightApply.weight} lbs to all sets?</span>
-                <button className="btn-ghost small" onClick={() => applyWeightToAll(we.exerciseId, pendingWeightApply.weight)}>Yes</button>
-                <button className="btn-ghost small" onClick={() => setPendingWeightApply(null)}>No</button>
-              </div>
-            )}
-
             <table className="sets-table">
               <thead>
                 <tr>
@@ -296,6 +283,7 @@ export default function LogWorkout() {
               <tbody>
                 {we.sets.map((s, i) => {
                   const done = completedSets[we.exerciseId]?.[i] ?? false;
+                  const isFirst = i === 0 && we.sets.length > 1;
                   return (
                     <tr key={i} className={done ? 'set-done' : ''}>
                       <td>{i + 1}</td>
@@ -305,7 +293,9 @@ export default function LogWorkout() {
                           min={0}
                           value={s.weight || ''}
                           placeholder="0"
+                          title={isFirst ? 'Press Enter to apply to all sets' : undefined}
                           onChange={e => updateSet(we.exerciseId, i, 'weight', parseFloat(e.target.value) || 0)}
+                          onKeyDown={e => { if (e.key === 'Enter' && isFirst) applyFieldToAll(we.exerciseId, 'weight', s.weight); }}
                         />
                       </td>
                       <td>
@@ -314,7 +304,9 @@ export default function LogWorkout() {
                           min={0}
                           value={s.reps || ''}
                           placeholder="0"
+                          title={isFirst ? 'Press Enter to apply to all sets' : undefined}
                           onChange={e => updateSet(we.exerciseId, i, 'reps', parseInt(e.target.value) || 0)}
+                          onKeyDown={e => { if (e.key === 'Enter' && isFirst) applyFieldToAll(we.exerciseId, 'reps', s.reps); }}
                         />
                       </td>
                       <td>
@@ -336,6 +328,10 @@ export default function LogWorkout() {
                 })}
               </tbody>
             </table>
+
+            {we.sets.length > 1 && (
+              <p className="apply-all-hint">Press Enter in set 1 to apply weight or reps to all sets</p>
+            )}
 
             <div className="exercise-card-actions">
               <button className="btn-ghost" onClick={() => addSet(we.exerciseId)}>+ Add Set</button>

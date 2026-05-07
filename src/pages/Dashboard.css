@@ -20,76 +20,51 @@
   letter-spacing: 0.05em;
 }
 
-.day-tabs {
-  display: flex;
-  gap: 0.5rem;
+.pr-select-row {
   margin-bottom: 1rem;
 }
 
-.day-tab {
-  padding: 0.4rem 1rem;
-  border-radius: 6px;
-  border: 1px solid #333;
-  background: transparent;
-  color: #888;
-  font-size: 0.85rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
-}
-
-.day-tab:hover {
-  background: #1a1a1a;
-  color: #ccc;
-}
-
-.day-tab.active {
-  background: #1e1010;
-  border-color: #e84040;
-  color: #e84040;
-}
-
-.pr-table tbody tr.no-data {
-  opacity: 0.4;
-  cursor: default;
-}
-
-.pr-table {
+.exercise-select {
   width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9rem;
-}
-
-.pr-table th {
-  text-align: left;
-  color: #666;
-  font-weight: 500;
-  padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid #222;
-}
-
-.pr-table td {
-  padding: 0.65rem 0.75rem;
-  border-bottom: 1px solid #1e1e1e;
-}
-
-.pr-table tbody tr {
-  cursor: pointer;
-  transition: background 0.1s;
-}
-
-.pr-table tbody tr:hover {
   background: #1a1a1a;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 0.55rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  appearance: auto;
 }
 
-.pr-table tbody tr.selected {
-  background: #1e1010;
-  outline: 1px solid #e84040;
+.exercise-select:focus {
+  outline: none;
+  border-color: #e84040;
 }
 
-.pr-table tbody tr.selected td:first-child {
-  color: #e84040;
+.pr-stat-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.pr-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.pr-stat-label {
+  font-size: 0.72rem;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #555;
+}
+
+.pr-stat-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
 }
 
 .hint {
@@ -110,24 +85,8 @@
 }
 
 @media (max-width: 640px) {
-  .day-tabs {
-    gap: 0.4rem;
-  }
-
-  .day-tab {
-    flex: 1;
-    text-align: center;
-    padding: 0.6rem 0.5rem;
-    font-size: 0.85rem;
-  }
-
-  .pr-table th {
-    padding: 0.4rem 0.5rem;
-    font-size: 0.78rem;
-  }
-
-  .pr-table td {
-    padding: 0.55rem 0.5rem;
-    font-size: 0.85rem;
+  .exercise-select {
+    font-size: 1rem;
+    padding: 0.65rem 0.75rem;
   }
 }
