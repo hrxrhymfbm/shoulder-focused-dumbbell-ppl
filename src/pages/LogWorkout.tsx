@@ -37,6 +37,7 @@ export default function LogWorkout() {
   const [pendingWeightApply, setPendingWeightApply] = useState<{ exerciseId: string; weight: number } | null>(null);
   const [saved, setSaved] = useState(false);
   const [restSecondsLeft, setRestSecondsLeft] = useState<number | null>(null);
+  const [completedSets, setCompletedSets] = useState<Record<string, boolean[]>>({});
 
   useEffect(() => {
     if (restSecondsLeft === null || restSecondsLeft <= 0) return;
@@ -45,7 +46,22 @@ export default function LogWorkout() {
   }, [restSecondsLeft]);
 
   useEffect(() => {
-    if (restSecondsLeft === 0 && navigator.vibrate) navigator.vibrate([200, 100, 200]);
+    if (restSecondsLeft !== 0) return;
+    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+    try {
+      const ctx = new AudioContext();
+      [0, 0.35].forEach(offset => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = 880;
+        gain.gain.setValueAtTime(0.6, ctx.currentTime + offset);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + offset + 0.3);
+        osc.start(ctx.currentTime + offset);
+        osc.stop(ctx.currentTime + offset + 0.3);
+      });
+    } catch {}
   }, [restSecondsLeft]);
 
   const exerciseMap = Object.fromEntries(DEFAULT_EXERCISES.map(e => [e.id, e]));
@@ -96,9 +112,13 @@ export default function LogWorkout() {
       return { exerciseId: re.exerciseId, sets };
     });
 
+    const completed: Record<string, boolean[]> = {};
+    exercises.forEach(e => { completed[e.exerciseId] = e.sets.map(() => false); });
+
     setSelectedDay(day);
     setWorkoutExercises(exercises);
     setWeightIncreased(increased);
+    setCompletedSets(completed);
     setSaved(false);
   }
 
@@ -110,6 +130,10 @@ export default function LogWorkout() {
         return { ...e, sets: [...e.sets, { weight: last.weight, reps: last.reps }] };
       })
     );
+    setCompletedSets(prev => ({
+      ...prev,
+      [exerciseId]: [...(prev[exerciseId] ?? []), false],
+    }));
   }
 
   function removeSet(exerciseId: string, setIndex: number) {
@@ -120,6 +144,20 @@ export default function LogWorkout() {
           : e
       )
     );
+    setCompletedSets(prev => ({
+      ...prev,
+      [exerciseId]: (prev[exerciseId] ?? []).filter((_, i) => i !== setIndex),
+    }));
+  }
+
+  function toggleSetComplete(exerciseId: string, setIndex: number) {
+    setCompletedSets(prev => {
+      const current = prev[exerciseId] ?? [];
+      const wasComplete = current[setIndex] ?? false;
+      const updated = current.map((v, i) => (i === setIndex ? !v : v));
+      if (!wasComplete) setRestSecondsLeft(90);
+      return { ...prev, [exerciseId]: updated };
+    });
   }
 
   function updateSet(exerciseId: string, setIndex: number, field: keyof SetEntry, value: number) {
@@ -161,6 +199,7 @@ export default function LogWorkout() {
     setWorkoutExercises([]);
     setWeightIncreased({});
     setPreviousSession(null);
+    setCompletedSets({});
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   }
@@ -250,44 +289,56 @@ export default function LogWorkout() {
                   <th>Set</th>
                   <th>Weight ({ex?.isDumbbell ? 'lbs each' : 'lbs'})</th>
                   <th>Reps</th>
+                  <th>Done</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
-                {we.sets.map((s, i) => (
-                  <tr key={i}>
-                    <td>{i + 1}</td>
-                    <td>
-                      <input
-                        type="number"
-                        min={0}
-                        value={s.weight || ''}
-                        placeholder="0"
-                        onChange={e => updateSet(we.exerciseId, i, 'weight', parseFloat(e.target.value) || 0)}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        min={0}
-                        value={s.reps || ''}
-                        placeholder="0"
-                        onChange={e => updateSet(we.exerciseId, i, 'reps', parseInt(e.target.value) || 0)}
-                      />
-                    </td>
-                    <td>
-                      {we.sets.length > 1 && (
-                        <button className="btn-ghost small" onClick={() => removeSet(we.exerciseId, i)}>✕</button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                {we.sets.map((s, i) => {
+                  const done = completedSets[we.exerciseId]?.[i] ?? false;
+                  return (
+                    <tr key={i} className={done ? 'set-done' : ''}>
+                      <td>{i + 1}</td>
+                      <td>
+                        <input
+                          type="number"
+                          min={0}
+                          value={s.weight || ''}
+                          placeholder="0"
+                          onChange={e => updateSet(we.exerciseId, i, 'weight', parseFloat(e.target.value) || 0)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          min={0}
+                          value={s.reps || ''}
+                          placeholder="0"
+                          onChange={e => updateSet(we.exerciseId, i, 'reps', parseInt(e.target.value) || 0)}
+                        />
+                      </td>
+                      <td>
+                        <button
+                          className={`set-check-btn${done ? ' checked' : ''}`}
+                          onClick={() => toggleSetComplete(we.exerciseId, i)}
+                          aria-label={done ? 'Mark incomplete' : 'Mark complete'}
+                        >
+                          {done ? '✓' : '○'}
+                        </button>
+                      </td>
+                      <td>
+                        {we.sets.length > 1 && (
+                          <button className="btn-ghost small" onClick={() => removeSet(we.exerciseId, i)}>✕</button>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
 
             <div className="exercise-card-actions">
               <button className="btn-ghost" onClick={() => addSet(we.exerciseId)}>+ Add Set</button>
-              <button className="btn-ghost rest-btn" onClick={() => setRestSecondsLeft(90)}>Rest 90s</button>
             </div>
 
             {prevEx && prevEx.sets.length > 0 && (

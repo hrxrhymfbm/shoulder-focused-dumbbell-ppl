@@ -47,14 +47,39 @@
   margin-bottom: 0.75rem;
 }
 
-.rest-btn {
-  color: #e84040;
-  border-color: #3a1a1a;
+.set-check-btn {
+  background: none;
+  border: 2px solid #444;
+  color: #666;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  line-height: 1;
 }
 
-.rest-btn:hover {
-  border-color: #e84040;
-  color: #ff6060;
+.set-check-btn:hover {
+  border-color: #4caf50;
+  color: #4caf50;
+}
+
+.set-check-btn.checked {
+  border-color: #4caf50;
+  background: #0d2010;
+  color: #4caf50;
+}
+
+.sets-table tr.set-done td {
+  opacity: 0.45;
+}
+
+.sets-table tr.set-done .set-check-btn {
+  opacity: 1;
 }
 
 .log-page.has-rest-timer {
